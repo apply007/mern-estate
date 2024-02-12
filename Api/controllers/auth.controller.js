@@ -1,14 +1,9 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
+import { errorHandler } from "../utils/error.js";
 
-export const signup = async (req, res) => {
-//   const existingUser = await User.findOne({ userName });
-//   if (existingUser) {
-//     return res.status(400).json({ message: "Username is already taken" });
-//   }
+export const signup = async (req, res,next) => {
 
-
-  //console.log(req.body)
   const { userName, email, password } = req.body;
   const hashPassword = bcryptjs.hashSync(password, 10);
   const newUser = new User({ userName, email, password: hashPassword });
@@ -17,7 +12,7 @@ export const signup = async (req, res) => {
 
   res.status(201).json({ message: "user created successfully" });
   } catch (error) {
-    res.status(500).json(error.message)
+   next(error)
   }
   
 };
