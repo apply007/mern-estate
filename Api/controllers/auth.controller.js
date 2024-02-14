@@ -23,11 +23,12 @@ export const signin = async (req, res, next) => {
   try {
     const validUser = await User.findOne({ email });
     if (!validUser) {
-      next(errorHandler(404, "User Not Found"));
+    return  next(errorHandler(404, "User Not Found"));
     }
     var validPassword = bcryptjs.compareSync(password, validUser.password);
+    console.log(validPassword)
     if (!validPassword) {
-      next(errorHandler(401, "wrong credentials"));
+    return  next(errorHandler(404, "wrong credentials"));
     }
 
     const token = jsonwebtoken.sign(
@@ -40,5 +41,5 @@ export const signin = async (req, res, next) => {
 
   } catch (error) {
     next(error);
-  }
+  } 
 };
