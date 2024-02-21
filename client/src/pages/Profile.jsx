@@ -4,6 +4,9 @@ import {
   updateUserStart,
   updateUserFailure,
   updateUserSuccess,
+  deleteUserFailure,
+  deleteUserSuccess,
+  deleteUserStart,
 } from "../Redux/user/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -25,7 +28,7 @@ export default function Profile() {
   const [file, setFile] = useState(undefined);
   const [fileProc, setFileProc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
-const [updateSuccess,setUpdateSuccess]=useState(false)
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const [formData, setFormData] = useState({});
   console.log(formData);
 
@@ -34,6 +37,23 @@ const [updateSuccess,setUpdateSuccess]=useState(false)
       handleFileUpload(file);
     }
   }, [file]);
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -88,7 +108,7 @@ const [updateSuccess,setUpdateSuccess]=useState(false)
         return;
       }
       dispatch(updateUserSuccess(data));
-      setUpdateSuccess(true)
+      setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
@@ -159,11 +179,18 @@ const [updateSuccess,setUpdateSuccess]=useState(false)
       </form>
 
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete account</span>
+        <span
+          className="text-red-700 cursor-pointer"
+          onClick={handleDeleteUser}
+        >
+          Delete account
+        </span>
         <span className="text-red-700 cursor-pointer">Sign out</span>
       </div>
-      <p className="text-red-700 mt-5">{error ? error : ""}</p>
-      <p className="text-green-700 mt-5">{updateSuccess ? "User is Updated Successfully" : ""}</p>
+
+      <p className="text-green-700 mt-5">
+        {updateSuccess ? "User is Updated Successfully" : ""}
+      </p>
     </div>
   );
 }
