@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
+import { Link } from "react-router-dom";
 import {
   updateUserStart,
   updateUserFailure,
@@ -66,7 +68,7 @@ export default function Profile() {
         dispatch(deleteUserFailure(data.message));
         return;
       }
-      dispatch(deleteUserSuccess(data))
+      dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(data.message));
     }
@@ -193,6 +195,9 @@ export default function Profile() {
         >
           {loading ? "Loading..." : "Update"}
         </button>
+        <Link to={'/create-listing'} className="bg-green-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 flex justify-center items-center">
+         Create Listing
+        </Link>
       </form>
 
       <div className="flex justify-between mt-5">
