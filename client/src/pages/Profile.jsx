@@ -34,7 +34,9 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [formData, setFormData] = useState({});
-  console.log(formData);
+  const [userListing, setuserListing] = useState([]);
+
+  const [showListingError, setShowListingError] = useState(false);
 
   useEffect(() => {
     if (file) {
@@ -133,6 +135,23 @@ export default function Profile() {
     }
   };
 
+  const handleShowListing = async () => {
+    try {
+      setShowListingError(false);
+      const res = await fetch(`/api/user/listing/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setShowListingError(true);
+
+        return;
+      }
+      setuserListing(data);
+      console.log(data);
+    } catch (error) {
+      setShowListingError(true);
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold my-7 text-center">Profile</h1>
@@ -195,8 +214,11 @@ export default function Profile() {
         >
           {loading ? "Loading..." : "Update"}
         </button>
-        <Link to={'/create-listing'} className="bg-green-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 flex justify-center items-center">
-         Create Listing
+        <Link
+          to={"/create-listing"}
+          className="bg-green-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 flex justify-center items-center"
+        >
+          Create Listing
         </Link>
       </form>
 
@@ -215,6 +237,39 @@ export default function Profile() {
       <p className="text-green-700 mt-5">
         {updateSuccess ? "User is Updated Successfully" : ""}
       </p>
+      <button className="text-green-700 w-full " onClick={handleShowListing}>
+        Show Listings
+      </button>
+      <p className="text-red-700 mt-5">
+        {showListingError ? "Error Showing listing" : ""}
+      </p>
+
+      {userListing &&
+        userListing.length > 0 &&
+        userListing.map((listing) => (
+          <div
+            key={listing._id}
+            className="border border-green-900  m-2 rounded flex p-5 justify-between items-center gap-4"
+          >
+            <Link to={`/listing/${listing._id}`}>
+              <img
+                className="w-16 h-16 object-contain rounded"
+                src={listing.imageUrls[0]}
+                alt=""
+              />
+            </Link>
+            <Link to={`/listing/${listing._id}`} className="font-semibold text-lg flex-1 hover:underline truncate">
+              <p >
+                {listing.name}
+              </p>
+            </Link>
+
+            <div className="flex flex-col items-center">
+            <button className="text-green-900 uppercase font-semibold w-full rounded mb-3 hover:opacity-85">Edit</button>
+            <button className="text-red-800 uppercase font-semibold  w-full rounded hover:opacity-70" >Delete</button>
+            </div>
+          </div>
+        ))}
     </div>
   );
 }
