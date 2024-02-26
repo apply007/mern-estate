@@ -152,6 +152,22 @@ export default function Profile() {
     }
   };
 
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+      const data = res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setuserListing((prev)=>(prev.filter((listing)=> listing._id !== listingId)));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold my-7 text-center">Profile</h1>
@@ -258,15 +274,23 @@ export default function Profile() {
                 alt=""
               />
             </Link>
-            <Link to={`/listing/${listing._id}`} className="font-semibold text-lg flex-1 hover:underline truncate">
-              <p >
-                {listing.name}
-              </p>
+            <Link
+              to={`/listing/${listing._id}`}
+              className="font-semibold text-lg flex-1 hover:underline truncate"
+            >
+              <p>{listing.name}</p>
             </Link>
 
             <div className="flex flex-col items-center">
-            <button className="text-green-900 uppercase font-semibold w-full rounded mb-3 hover:opacity-85">Edit</button>
-            <button className="text-red-800 uppercase font-semibold  w-full rounded hover:opacity-70" >Delete</button>
+              <button
+               
+                className="text-green-900 uppercase font-semibold w-full rounded mb-3 hover:opacity-85"
+              >
+                Edit
+              </button>
+              <button  onClick={() => handleListingDelete(listing._id)} className="text-red-800 uppercase font-semibold  w-full rounded hover:opacity-70">
+                Delete
+              </button>
             </div>
           </div>
         ))}
