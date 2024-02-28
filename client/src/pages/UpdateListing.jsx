@@ -173,12 +173,12 @@ const UpdateListing = () => {
       const data = await res.json();
       setLoading(false);
       debugger;
-     // console.log(data);
+   
       if (data.success === false) {
         setError(data.message);
    
       } 
-console.log(data._id)
+
         navigate(`/listing/${data._id}`);
       
     } catch (error) {
