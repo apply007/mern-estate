@@ -40,12 +40,12 @@ const UpdateListing = () => {
   useEffect(() => {
     const fetchListing = async () => {
       const listingIds = params.listingId;
-      console.log(listingIds)
+   
       const res = await fetch(`/api/listing/get/${listingIds}`);
       const data =await res.json();
-      console.log(data.success)
+ 
       if (data.success === false) {
-        console.log(data.message);
+    
         return;
       }
       setFormData(data);
@@ -171,17 +171,16 @@ const UpdateListing = () => {
       });
 
       const data = await res.json();
+      setLoading(false);
       debugger;
-      console.log(data);
+     // console.log(data);
       if (data.success === false) {
         setError(data.message);
-        setLoading(false);
-      } else {
-        setError(false);
-        setLoading(false);
-
+   
+      } 
+console.log(data._id)
         navigate(`/listing/${data._id}`);
-      }
+      
     } catch (error) {
       setError(error.message);
       setLoading(false);
