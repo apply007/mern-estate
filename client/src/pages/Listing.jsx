@@ -7,14 +7,19 @@ import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import { FaBed, FaBath, FaParking, FaChair } from "react-icons/fa";
 
+import { useSelector } from "react-redux";
+import Contact from "../components/Contact";
+
 export default function Listing() {
   SwiperCore.use([Navigation]);
   const params = useParams();
   const [listing, setListing] = useState(null);
+  const [contact, setContact] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log(params.listingId);
+  const { currentUser } = useSelector((state) => state.user);
+
   useEffect(() => {
     const fetchListing = async () => {
       try {
@@ -37,7 +42,7 @@ export default function Listing() {
     };
     fetchListing();
   }, [params.listingId]);
-  console.log(loading);
+
   return (
     <main className="px-4">
       {loading && <p className="my-7 text-center text-2xl">Loading...</p>}
@@ -119,8 +124,16 @@ export default function Listing() {
               </li>
             </ul>
           </div>
+          {currentUser && listing.userRef !== currentUser._id && !contact && (
+            <button
+              onClick={() => setContact(true)}
+              className="uppercase flex justify-center border p-2 sm:w-[50%] ml-28 sm:ml-72 font-semibold italic hover:opacity-80 rounded-lg text-white bg-slate-700 items-center"
+            >
+              Contact LandLord
+            </button>
+          )}
 
-
+          {contact && <Contact listing={listing}/>}
         </div>
       )}
     </main>
