@@ -75,7 +75,7 @@ export default function Listing() {
               {listing.name} -{" "}
             </h1>
             <h1 className="w-full max-w-[200px] text-2lg font-bold text-center p-2 rounded-md">
-              BDT {listing.regularPrice} / Month
+              BDT {listing.regularPrice.toLocaleString('en-US')} / Month
             </h1>
           </div>
 
@@ -86,7 +86,7 @@ export default function Listing() {
 
             {listing.offer && (
               <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                BDT {+listing.regularPrice - listing.discountPrice}
+                BDT {(+listing.regularPrice - +listing.discountPrice).toLocaleString('en-US')}
               </p>
             )}
           </div>

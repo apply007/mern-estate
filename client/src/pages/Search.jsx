@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ListingItem from "../components/ListingItem";
 
 export default function () {
   const [sideBardata, setSideBarData] = useState({
@@ -204,10 +205,32 @@ export default function () {
           </button>
         </form>
       </div>
-      <div className="">
+
+      <div className="flex-1">
         <h1 className="text-3xl font-semibold p-3 text-slate-700 mt-5">
-          Listing Results :
+          Listing Results:
         </h1>
+
+        <div className="p-7 flex flex-wrap gap-4">
+          {loading && (
+            <p className="text-xl text-slate-700 text-center w-full">
+              Loading...
+            </p>
+          )}
+          {!listing && (
+            <div className="mt-6 ml-5 w-full gap-3 p-7">
+              <h1 className="text-lg  items-center p-3 bg-gradient-to-r font-semibold rounded-lg from-cyan-300 to-blue-600 text-white">
+                No Data To Show
+              </h1>
+            </div>
+          )}
+
+          {!loading &&
+            listing &&
+            listing.map((list) => (
+              <ListingItem key={list._id} listing={list} />
+            ))}
+        </div>
       </div>
     </div>
   );
