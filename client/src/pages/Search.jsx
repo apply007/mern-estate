@@ -15,7 +15,24 @@ export default function () {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [listing, setListing] = useState([]);
-  console.log(listing);
+  const [showMore, setShowMore] = useState(false);
+
+
+  const onShowMoreClick = async () => {
+    const numberOfListing = listing.length;
+  
+    const urlParams = new URLSearchParams(location.search);
+    const startIndex = numberOfListing;
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 9) {
+      setShowMore(false);
+    }
+    setListing([...listing,...data])
+  };
 
   const handleChange = (e) => {
     if (
@@ -82,6 +99,10 @@ export default function () {
 
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
+      if (data.length > 8) {
+        setShowMore(true);
+      }
+      
       setListing(data);
       setLoading(false);
     };
@@ -230,6 +251,15 @@ export default function () {
             listing.map((list) => (
               <ListingItem key={list._id} listing={list} />
             ))}
+
+          {showMore && (
+            <button
+              onClick={onShowMoreClick}
+              className="text-green-700 hover:underline p-7 w-full text-center"
+            >
+              Show More
+            </button>
+          )}
         </div>
       </div>
     </div>
